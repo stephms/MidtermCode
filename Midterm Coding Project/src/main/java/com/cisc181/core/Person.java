@@ -17,6 +17,9 @@ public abstract class Person implements java.io.Serializable {
 	private String address;
 	private String phone_number;
 	private String email_address;
+	//To check phone number
+	String regex = "^\\(?([0-9]{3})\\)?[-.\\s]?([0-9]{3})[-.\\s]?([0-9]{4})$";
+	Pattern pattern = Pattern.compile(regex);
 
 	public String getFirstName() {
 		return FirstName;
@@ -87,7 +90,16 @@ public abstract class Person implements java.io.Serializable {
 	/*
 	 * Constructors Constructor with arguments
 	 */
-
+	public void checkNumber() throws PersonException{
+		    Matcher matcher = pattern.matcher(phone_number);
+		    if(matcher.matches()){
+		    	System.out.println("Phone number is correct");
+		    }else{
+		    	throw new PersonException(this);
+		    	
+		    }
+		    System.out.println("MUST be in format: (###)-###-####");
+	}
 	public Person(String FirstName, String MiddleName, String LastName,
 			Date DOB, String Address, String Phone_number, String Email)
 	{
@@ -110,7 +122,7 @@ public abstract class Person implements java.io.Serializable {
 		System.out.println(this.DOB);
 	}
 
-	public int PrintAge() {
+	public int PrintAge() throws PersonException {
 		Calendar today = Calendar.getInstance();
 		Calendar birthDate = Calendar.getInstance();
 
@@ -135,7 +147,9 @@ public abstract class Person implements java.io.Serializable {
 						.get(Calendar.DAY_OF_MONTH))) {
 			age--;
 		}
-
+		if((birthDate.get(Calendar.YEAR)+100) >= today.get(Calendar.YEAR)){
+			throw new PersonException(this);
+		}
 		System.out.println("age is " + age);
 
 		return age;
